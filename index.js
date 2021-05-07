@@ -1,12 +1,26 @@
-const express = require('express')
-const app = express()
+const express = require("express");
+const app = express();
+const multer = require("multer");
+
+app.set('view engine','ejs');
+
+const storage  = multer.diskStorage({
+	destination: function(req,file,cb){
+		cb(null, "uploads/");
+	},
+	filename: function(req,file,cb){
+		cb(null, file.originalname + Date.now());
+	}
+})
+const upload = multer({storage})
+
 app.get('/', (req,res) => {
-	return res.send("hello world !");
+	res.render("index");
 })
-app.get('/test', (req,res) =>{
- return res.sendFile(__dirname + '/index.html')
+app.post('/upload',upload.single("file"),(req,res) => {
+   res.send("arquivo recebido !")
 })
-app.listen(8081, () => {
-	console.log("server running on localhost:8081")
-}) /*it can be for example any other door */ 
-/* to run the server put in cmd or terminal in linux "node (and here the name of the file, in this case, index.js" then it is "node index.js"*/
+app.listen(3000, () => {
+	console.log("servidor rodando na porta 3000");
+
+});
